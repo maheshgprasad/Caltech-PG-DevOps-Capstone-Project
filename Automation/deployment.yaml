@@ -1,0 +1,10 @@
+- name: "Docker Container Deployment to Remote Server"
+  hosts: "application_servers"
+  gather_facts: "false"
+  become: "false"
+  tasks:
+    - name: a
+    - name: b
+    - name: c
+    - name: d
+    # TO BE DONE 

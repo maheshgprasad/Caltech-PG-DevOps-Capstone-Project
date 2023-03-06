@@ -1,12 +1,9 @@
 def BUILD = "$BUILD_NUMBER"
-def IMAGE_REPO = "maheshgprasad/app-1"
-def SERVICE = "app-1_web"
+def IMAGE_REPO = "maheshgprasad/express_app"
+def SERVICE = "express_web"
+def HOST_TO_CONTAINER_PORT = "80:3000"
+def PRJ_NAME = "project-aetna"
 pipeline {
-    environment {
-        registry = 'maheshgprasad/{tbd}'
-        registryCredentials = '' //get token from hub.docker.com
-        dockerImage = ''
-    }
     agent any
 
     stages {
@@ -15,27 +12,59 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins_git_auth', url: 'https://github.com/maheshgprasad/project-aetna.git/']]])
             }
         }
-        stage('Docker Build') {
+        stage('Docker Image Build') {
             steps {
                 script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    sh "docker build -t ${IMAGE_REPO}:v${BUILD} -f ./Automation/Dockerfile . "
+                    sh "docker tag ${IMAGE_REPO}:v${BUILD} ${IMAGE_REPO}:latest"
+                }
+            }
+        }
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh "docker run -d -p ${HOST_TO_CONTAINER_PORT} --name ${PRJ_NAME} ${IMAGE_REPO}:v${BUILD}"
+                    sh "sleep 2s" //allows some time for the container to be ready to receive any requests
+                }
+            }
+        }
+        stage('Container Health Check') {
+            steps {
+                script {
+                    sh "curl localhost/health"
+                }                    
+            }
+        }
+        stage('API Response Check') {
+            steps {
+                script {
+                    sh "curl localhost/api/v1"
+                }                    
+            }
+        }        
+        stage('Container Cleanup') {
+            steps {
+                script {
+                    sh "docker ps --filter name=${PRJ_NAME} -q |xargs docker stop |xargs docker rm"
                 }
             }
         }
         stage('Docker Push') {
             steps {
-                script{
-                    docker.withRegistry( '' , registryCredentials) {
-                    dockerImage.push()
-                }
+                withCredentials([usernamePassword(credentialsId: 'docker_hub_cred', passwordVariable: 'DCKR_PSWD', usernameVariable: 'DCKR_USR')]) {
+                script {                   
+                    sh "echo ${DCKR_PSWD} | docker login -u ${DCKR_USR} --password-stdin"
+                    sh "echo 'docker push ${IMAGE_REPO}:v${BUILD}' "
+                    sh "echo 'docker push ${IMAGE_REPO}:latest' "
+                    }    
                 }
             }
         }
-        stage('Update Service') {
-            steps {
-                sh "docker service update --image $IMAGE_REPO:$BUILD $SERVICE"
-            }
-        }
+        // stage('Update Service') {
+        //     steps {
+        //         sh "docker service update --image $IMAGE_REPO:$BUILD $SERVICE"
+        //     }
+        // }
 
     }
 }
