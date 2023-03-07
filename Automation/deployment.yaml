@@ -1,5 +1,5 @@
 - name: Docker Container Deployment to Remote Server
-  hosts: localhost
+  hosts: application_servers
   gather_facts: no
   become: no
   tasks:
