@@ -1,10 +1,46 @@
-- name: "Docker Container Deployment to Remote Server"
-  hosts: "application_servers"
-  gather_facts: "false"
-  become: "false"
+- name: Docker Container Deployment to Remote Server
+  hosts: localhost
+  gather_facts: no
+  become: no
   tasks:
-    - name: a
-    - name: b
-    - name: c
-    - name: d
-    # TO BE DONE 
+    - name: Check if the container exists
+      script: files/docker_ce.sh {{ container_name }}
+      register: status
+
+    - name: container presence
+      debug:
+        var: status.stdout_lines[0] # adding this because the stdout returns a new line character :(
+
+    - name: Container Status
+      shell: echo "you are able to read me because the container you searched for exists"
+      when: status.stdout_lines[0] == "PRESENT"
+      register: res
+
+    - name: container status when present
+      debug:
+        var: res.stdout
+      when: status.stdout_lines[0] == "PRESENT"
+
+    - name: "Send docker-compose file"
+      template:
+        src: "files/docker-compose.j2"
+        dest: "/home/ansible-user/docker-compose.yml"
+      when: status.stdout_lines[0] == "ABSENT"
+
+    - name: Create Docker Stack
+      shell: docker stack deploy -c docker-compose.yml {{ stack_name }}
+      when: status.stdout_lines[0] == "ABSENT"
+
+    - name: Container update
+      shell: echo " {{ service_name }} "
+      when: status.stdout_lines[0] == "PRESENT"
+      register: service_update
+
+    - name: container service deployment update
+      debug:
+        var: service_update.stdout_lines
+      when: status.stdout_lines[0] == "PRESENT"
+    # - name: Fail automation
+    #   fail:
+    #     msg: Unfortunately the container to which you're trying to deploy is not present on the application server
+    #   when: status.stdout_lines[0] == "ABSENT"
