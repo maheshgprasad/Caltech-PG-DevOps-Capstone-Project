@@ -24,11 +24,11 @@
     - name: "Send docker-compose file"
       template:
         src: "files/docker-compose.j2"
-        dest: "/home/ansible-user/docker-compose.yml"
+        dest: "/tmp/docker-compose.yml"
       when: status.stdout_lines[0] == "ABSENT"
 
     - name: Create Docker Stack
-      shell: docker stack deploy -c docker-compose.yml {{ stack_name }}
+      shell: docker stack deploy -c /tmp/docker-compose.yml {{ stack_name }}
       when: status.stdout_lines[0] == "ABSENT"
 
     - name: Container update
