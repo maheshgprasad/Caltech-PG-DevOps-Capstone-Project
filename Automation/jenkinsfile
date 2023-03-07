@@ -10,10 +10,10 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                lean Workspace before Checkout
+                //clean Workspace before Checkout
                 cleanWs()
-                it Checkout
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins_git_auth', url: 'https:ithub.com/maheshgprasad/project-aetna.git/']]])
+                //git Checkout
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins_git_auth', url: 'https://github.com/maheshgprasad/project-aetna.git/']]])
             }
         }
         stage('NPM Install') {
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     sh "docker run -d -p ${HOST_TO_CONTAINER_PORT} --name ${PRJ_NAME} ${IMAGE_REPO}:v${BUILD}"
-                    sh "sleep 5s" llows some time for the container to be ready to receive any requests
+                    sh "sleep 5s" //allows some time for the container to be ready to receive any requests
                 }
             }
         }
@@ -76,7 +76,8 @@ pipeline {
         }
         stage('Update Service') {
             steps {
-                sh "ansible-playbook deployment.yaml -e 'service_name="$SERVICE" docker_image="${IMAGE_REPO}:v${BUILD}" docker_ports="$HOST_TO_CONTAINER_PORT" container_name="$PRJ_NAME" stack_name="$STACK_NAME" ' "
+                sh "ansible-playbook deployment.yaml --extra-vars='service_name=${SERVICE} docker_image=${IMAGE_REPO}:v${BUILD} docker_ports=${HOST_TO_CONTAINER_PORT} container_name=${PRJ_NAME} stack_name=${STACK_NAME}' "
+
             }
         }
 
