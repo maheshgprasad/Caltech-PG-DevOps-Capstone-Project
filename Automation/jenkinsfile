@@ -68,17 +68,17 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'docker_hub_cred', passwordVariable: 'DCKR_PSWD', usernameVariable: 'DCKR_USR')]) {
                 script {                   
                     sh "echo ${DCKR_PSWD} | docker login -u ${DCKR_USR} --password-stdin"
-                    sh "echo 'docker push ${IMAGE_REPO}:v${BUILD}' "
-                    sh "echo 'docker push ${IMAGE_REPO}:latest' "
+                    sh "docker push ${IMAGE_REPO}:v${BUILD}"
+                    sh "docker push ${IMAGE_REPO}:latest"
                     }    
                 }
             }
         }
-        // stage('Update Service') {
-        //     steps {
-        //         sh "ansible-playbook deployment.yaml -e 'container_name="" service_name="b-safe-service" ' "
-        //     }
-        // }
+        stage('Update Service') {
+            steps {
+                sh "ansible-playbook deployment.yaml -e 'service_name="$SERVICE" docker_image="${IMAGE_REPO}:v${BUILD}" docker_ports="$HOST_TO_CONTAINER_PORT" container_name="$PRJ_NAME" stack_name="$STACK_NAME" ' "
+            }
+        }
 
     }
 }
