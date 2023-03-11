@@ -5,21 +5,10 @@
   become_user: ansible-user
   tasks:
     - name: Install Node JS
-      script: Remote_Config/remote_config_docker_setup.sh
-      register: node_js_install
-      tags: node_js
-
-    - name: node js debug
-      debug:
-        var: node_js_install.stdout_lines
+      script: Remote_Config/remote_node_js_setup.sh
       tags: node_js
 
     - name: Install Docker
       script: Remote_Config/remote_config_docker_setup.sh
       register: docker_install
-      tags: docker_io
-
-    - name: container status when present
-      debug:
-        var: docker_install.stdout_lines
       tags: docker_io
