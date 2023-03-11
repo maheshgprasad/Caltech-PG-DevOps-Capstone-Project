@@ -45,7 +45,7 @@ pipeline {
         stage('Container Health Check') {
             steps {
                 script {
-                    sh "curl localhost/health"
+                    sh "curl localhost/health" 
                 }                    
             }
         }
@@ -56,7 +56,7 @@ pipeline {
                 }                    
             }
         }        
-        stage('Container Cleanup') {
+        stage('Purge Container') {
             steps {
                 script {
                     sh "docker ps --filter name=${PRJ_NAME} -q |xargs docker stop |xargs docker rm"
@@ -74,9 +74,9 @@ pipeline {
                 }
             }
         }
-        stage('Update Service') {
+        stage('Deploy Service') {
             steps {
-                sh "ansible-playbook deployment.yaml --extra-vars='service_name=${SERVICE} docker_image=${IMAGE_REPO}:v${BUILD} docker_ports=${HOST_TO_CONTAINER_PORT} container_name=${PRJ_NAME} stack_name=${STACK_NAME}' "
+                sh "ansible-playbook -i Automation/inventory Automation/deployment.yaml --extra-vars='service_name=${SERVICE} docker_image=${IMAGE_REPO}:v${BUILD} docker_ports=${HOST_TO_CONTAINER_PORT} container_name=${PRJ_NAME} stack_name=${STACK_NAME}' "
 
             }
         }

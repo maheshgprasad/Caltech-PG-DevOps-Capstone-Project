@@ -1,14 +1,14 @@
-# Project Aetna 
-# DESCRIPTION
+# Caltech PG-DevOps Capstone Project
 
+### DESCRIPTION
 Create a CI/CD Pipeline to convert the legacy development process to a DevOps process.
 
-# Background of the problem statement:
+### Background of the problem statement:
 A leading US healthcare company, Aetna, with a large IT structure had a 12-week release cycle and their business was impacted due to the legacy process. To gain
 true business value through faster feature releases, better service quality, and cost optimization, they wanted to adopt agility in their build and release process.
 The objective is to implement iterative deployments, continuous innovation, and automated testing through the assistance of the strategy.
 
-# Implementation requirements:
+### Implementation requirements:
 
 - Install and configure the Jenkins architecture on AWS instance
 - Use the required plugins to run the build creation on a containerized platform
@@ -19,7 +19,6 @@ The objective is to implement iterative deployments, continuous innovation, and 
 - Remove container stack after completing the job
 
 The following tools must be used:
-
  - EC2
  - Jenkins
  - Docker
