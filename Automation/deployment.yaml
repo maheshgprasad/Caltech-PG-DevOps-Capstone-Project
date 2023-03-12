@@ -1,7 +1,7 @@
 - name: Docker Container Deployment to Remote Server
   hosts: application_servers
   gather_facts: no
-  become: yes
+  become: no
   tasks:
     - name: Check if the container exists
       script: files/docker_ce.sh {{ container_name }}

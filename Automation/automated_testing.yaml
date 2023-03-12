@@ -1,9 +1,9 @@
 - name: Test Deployment
-  hosts: application_servers
+  hosts: localhost
   gather_facts: no
   become: no
   vars:
-    url: "127.0.0.1"
+    url: {{application-server}}
     port: "80"
     api: "health"
   tasks:
@@ -26,18 +26,20 @@
       debug:
         var: ab_1.stdout_lines
 
-    - name: "Apache Benchmark 5000 Requests 250 Concurrent"
-      shell: ab -n 5000 -c 250 http://{{ url }}:{{ port }}/{{api}}
-      register: ab_2
+    # - name: "Apache Benchmark 5000 Requests 250 Concurrent"
+    #   shell: ab -n 5000 -c 250 http://{{ url }}:{{ port }}/{{api}}
+    #   register: ab_2
 
-    - name: "apache benchmark results 2"
-      debug:
-        var: ab_2.stdout_lines
+    # - name: "apache benchmark results 2"
+    #   debug:
+    #     var: ab_2.stdout_lines
 
-    - name: "Apache Benchmark 10000 Requests 500 Concurrent"
-      shell: ab -n 10000 -c 500 http://{{ url }}:{{ port }}/{{api}}
-      register: ab_3
+    # - name: "Apache Benchmark 10000 Requests 500 Concurrent"
+    #   shell: ab -n 10000 -c 500 http://{{ url }}:{{ port }}/{{api}}
+    #   register: ab_3
 
-    - name: "apache benchmark results 3"
-      debug:
-        var: ab_3.stdout_lines
+    # - name: "apache benchmark results 3"
+    #   debug:
+    #     var: ab_3.stdout_lines
+  
+  #ansible-playbook automated_testing.yaml -e'ansible_host=<ip-address.>'
