@@ -1,2 +1,0 @@
-[application_servers]
-Application_Server ansible_host="3.210.185.204"

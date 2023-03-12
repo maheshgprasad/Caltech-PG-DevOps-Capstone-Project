@@ -8,9 +8,6 @@ sudo chmod 400 /home/$USERNAME/.ssh/authorized_keys
 sudo chown $USERNAME:$USERNAME -R /home/$USERNAME/.ssh/
 sudo echo "$USERNAME  ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers	
 
-# Most useful 
-sudo usermod -aG docker ansible-user #Important for ansible to be able to access docker
-newgrp docker 
 
 
 

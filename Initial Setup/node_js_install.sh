@@ -1,4 +1,7 @@
+#!/bin/bash
 # OS: Ubuntu
+# Mode of Installation: Manual
+
 #Optional
 sudo apt install wget -y
 # Node JS, Version 18.14.2 Install
@@ -18,3 +21,5 @@ sudo ln -s /usr/lib/node-18.14.2/bin/npm /usr/bin/npm
 sudo ln -s /usr/lib/node-18.14.2/bin/npx /usr/bin/npx
 # clean up
 rm -rf /tmp/node-v18.14.2-linux-x64.tar.xz
+
+

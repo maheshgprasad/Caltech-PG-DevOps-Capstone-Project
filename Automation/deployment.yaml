@@ -32,7 +32,7 @@
       when: status.stdout_lines[0] == "ABSENT"
 
     - name: Container update
-      shell: echo " {{ service_name }} "
+      shell: docker service update --image {{ docker_image }} {{ stack_name }}_{{ service_name }}"
       when: status.stdout_lines[0] == "PRESENT"
       register: service_update
 
