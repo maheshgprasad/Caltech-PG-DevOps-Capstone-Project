@@ -1,4 +1,7 @@
-#OS: Ubuntu
+#!/bin/bash
+# OS: Ubuntu
+# Mode of Installation: Manual
+
 # Install Open JDK 11
 apt install openjdk-11-jre-headless -y
 # Install Jenkins
@@ -10,4 +13,4 @@ echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
 sudo apt-get update -y
 sudo apt-get install jenkins -y
 sudo systemctl enable jenkins
-sudo systemctl start jenkins
+sudo systemctl start jenkins 

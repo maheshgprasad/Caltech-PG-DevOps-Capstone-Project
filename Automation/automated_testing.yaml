@@ -1,0 +1,43 @@
+- name: Test Deployment
+  hosts: application_servers
+  gather_facts: no
+  become: no
+  vars:
+    url: "127.0.0.1"
+    port: "80"
+    api: "health"
+  tasks:
+    - name: "Test Health API"
+      uri:
+        url: "http://{{ url }}:{{ port }}/{{api}}"
+        method: GET
+        return_content: true
+        status_code: 200
+      register: "health_api"
+    - name: "Print Results"
+      debug:
+        var: health_api.json
+
+    - name: "Apache Benchmark 1000 Requests 100 Concurrent"
+      shell: ab -n 1000 -c 100 http://{{ url }}:{{ port }}/{{api}}
+      register: ab_1
+
+    - name: "apache benchmark results 1"
+      debug:
+        var: ab_1.stdout_lines
+
+    - name: "Apache Benchmark 5000 Requests 250 Concurrent"
+      shell: ab -n 5000 -c 250 http://{{ url }}:{{ port }}/{{api}}
+      register: ab_2
+
+    - name: "apache benchmark results 2"
+      debug:
+        var: ab_2.stdout_lines
+
+    - name: "Apache Benchmark 10000 Requests 500 Concurrent"
+      shell: ab -n 10000 -c 500 http://{{ url }}:{{ port }}/{{api}}
+      register: ab_3
+
+    - name: "apache benchmark results 3"
+      debug:
+        var: ab_3.stdout_lines

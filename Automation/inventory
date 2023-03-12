@@ -1,2 +1,2 @@
 [application_servers]
-APP-1 ansible_host="3.210.185.204"
+APP-1 ansible_host="100.25.77.10"
